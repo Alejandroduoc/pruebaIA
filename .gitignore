@@ -1,0 +1,12 @@
+# Archivo .gitignore para proyecto con secretos
+.env
+.env.*
+config/secrets.yml
+credentials.json
+*.key
+*.pem
+
+# Logs y temporales
+*.log
+tmp/
+temp/
