@@ -13,8 +13,7 @@ from langchain_core.memory.buffer import ConversationBufferMemory
 from langchain.memory import ConversationBufferMemory 
 from langchain.text_splitter import RecursiveCharacterTextSplitter 
 from langchain_core.documents import Document
-from langchain.tools import tool
-from langchain_core.tools import BaseTool
+from langchain_core.tools import BaseTool, tool
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 
 # --- 1. Definición de Herramientas Especializadas (Concepto de RA2) ---
