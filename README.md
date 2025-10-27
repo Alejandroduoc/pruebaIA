@@ -159,13 +159,8 @@ sistema-multi-agente/
 - **Precisión de categorización**: > 90%
 - **Colaboración exitosa**: > 85%
 
-## 📚 Documentación Adicional
 
-- **[README Detallado](README_DETALLADO.md)**: Documentación completa
-- **[Diagramas de Arquitectura](DIAGRAMAS_ARQUITECTURA.md)**: Diagramas Mermaid
-- **[Memoria Avanzada](MEMORIA_AVANZADA_IMPLEMENTADA.md)**: Sistema de memoria
-- **[Referencias Bibliográficas](REFERENCIAS_BIBLIOGRAFICAS.md)**: Formato APA
-- **[Análisis de Cumplimiento](ANALISIS_CUMPLIMIENTO.md)**: Verificación de requisitos
+
 
 ## 🎓 Integración RA1 y RA2
 
