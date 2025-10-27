@@ -159,6 +159,9 @@ sistema-multi-agente/
 - **Precisión de categorización**: > 90%
 - **Colaboración exitosa**: > 85%
 
+## 📚 Documentación Adicional
+
+- **[Informe Detallado](informe.ipynb)**: Documentación completa
 
 
 
