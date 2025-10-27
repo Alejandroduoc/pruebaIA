@@ -132,18 +132,12 @@ Usuario: "Mi computadora tiene virus y no puedo conectarme a WiFi"
 ```
 sistema-multi-agente/
 ├── sistema_completo_agentes.py    # Sistema principal
-├── chat.py                        # Chatbot original
 ├── requirement.txt                # Dependencias
 ├── soporte_informatica.txt        # Material de conocimiento
-├── README.md                      # Este archivo
-├── README_DETALLADO.md           # Documentación completa
-├── DOCUMENTACION_COMPLETA_SISTEMA_AGENTES.md
-├── INFORME_COMPLETO.md
-├── MEMORIA_AVANZADA_IMPLEMENTADA.md
-├── DIAGRAMAS_ARQUITECTURA.md
-├── REFERENCIAS_BIBLIOGRAFICAS.md
-├── ANALISIS_CUMPLIMIENTO.md
-├── MEJORAS_ICONOS.md
+├── README.md                    
+├── informe.ipynb                 # Documentación completa
+
+
 
 ```
 
@@ -162,7 +156,7 @@ sistema-multi-agente/
 ## 📚 Documentación Adicional
 
 - **[Informe Detallado](informe.ipynb)**: Documentación completa
-
+- **[Presentacioó de sistema ](informe.ipynb)**: Documentación completa
 
 
 ## 🎓 Integración RA1 y RA2
