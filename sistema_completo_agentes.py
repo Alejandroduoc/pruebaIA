@@ -5,6 +5,8 @@ Sistema Completo de Agentes Múltiples con Orquestación y Multi-Agente
 """
 
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import time
 import streamlit as st
 from datetime import datetime
