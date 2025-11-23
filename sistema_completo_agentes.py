@@ -5,8 +5,6 @@ Sistema Completo de Agentes Múltiples con Orquestación y Multi-Agente
 """
 
 import os
-
-import os
 import time
 import streamlit as st
 from datetime import datetime
@@ -18,36 +16,7 @@ from langchain_core.documents import Document
 from langchain_classic.memory import ConversationBufferMemory, ConversationSummaryMemory, ConversationBufferWindowMemory, ConversationEntityMemory, VectorStoreRetrieverMemory
 from langchain_community.vectorstores import FAISS
 from langsmith import Client
-import logging
 
-# -------------------- Observabilidad y Seguridad --------------------
-# Configuración de logging para trazabilidad y análisis de logs
-logging.basicConfig(
-    filename='agentes_observabilidad.log',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(name)s %(message)s'
-)
-logger = logging.getLogger("SistemaAgentes")
-
-# Guardrails y validaciones básicas para seguridad y ética
-def validar_entrada_usuario(entrada: str) -> bool:
-    """Valida la entrada del usuario para evitar datos sensibles o lenguaje ofensivo."""
-    palabras_prohibidas = ["contraseña", "password", "tarjeta", "crédito", "insulto", "ofensivo"]
-    for palabra in palabras_prohibidas:
-        if palabra in entrada.lower():
-            return False
-    return True
-
-def mitigar_sesgos(respuesta: str) -> str:
-    """Mitiga posibles sesgos o lenguaje discriminatorio en la respuesta."""
-    # Ejemplo simple: advertencia si detecta palabras sensibles
-    palabras_sesgo = ["hombre", "mujer", "raza", "religión", "discapacidad"]
-    for palabra in palabras_sesgo:
-        if palabra in respuesta.lower():
-            return respuesta + "\n[ADVERTENCIA: Esta respuesta puede contener sesgos. Revise críticamente.]"
-    return respuesta
-
-# -------------------- Configuración --------------------
 # -------------------- Configuración --------------------
 client = Client()
 print("✓ LangSmith conectado al proyecto:", os.getenv("LANGCHAIN_PROJECT"))
@@ -55,11 +24,11 @@ print("✓ LangSmith conectado al proyecto:", os.getenv("LANGCHAIN_PROJECT"))
 # -------------------- Herramientas Especializadas (RA1 y RA2) --------------------
 
 class HerramientaSoporte:
-    """Conjunto de herramientas para soporte informático, con logs de uso para trazabilidad."""
-
+    """Conjunto de herramientas para soporte informático"""
+    
     @staticmethod
     def calculadora_matematica(expresion: str) -> str:
-        """Calcula expresiones matemáticas para hardware y capacidad, con log de uso."""
+        """Calcula expresiones matemáticas para hardware y capacidad"""
         try:
             funciones_permitidas = {
                 'abs': abs, 'round': round, 'min': min, 'max': max,
@@ -67,31 +36,29 @@ class HerramientaSoporte:
                 'len': len
             }
             resultado = eval(expresion, {"__builtins__": {}, **funciones_permitidas})
-            logger.info(f"Uso de calculadora_matematica: {expresion} -> {resultado}")
             return f"Resultado: {resultado}"
         except Exception as e:
-            logger.error(f"Error en calculadora_matematica: {expresion} -> {str(e)}")
             return f"Error en el cálculo: {str(e)}"
-
+    
     @staticmethod
     def buscar_informacion(query: str, categoria: str = "general") -> str:
-        """Busca información categorizada por tipo de soporte, con log de uso."""
-        logger.info(f"Búsqueda de información: query={query}, categoria={categoria}")
+        """Busca información categorizada por tipo de soporte"""
+        # Esta función ahora se basa únicamente en el material cargado por los agentes
         return f"Información sobre {query} para la categoría {categoria}"
-
+    
     @staticmethod
     def analizar_problema(descripcion: str) -> Dict[str, Any]:
-        """Analiza la descripción del problema y sugiere una categoría, con log de uso."""
+        """Analiza la descripción del problema y sugiere una categoría"""
         palabras_hardware = ["cpu", "ram", "disco", "hardware", "procesador", "memoria"]
         palabras_software = ["programa", "aplicación", "software", "instalación", "bug", "error"]
         palabras_redes = ["internet", "wifi", "conexión", "red", "router"]
         palabras_seguridad = ["virus", "malware", "seguridad", "antivirus", "firewall"]
-
+        
         desc_lower = descripcion.lower()
-
+        
         categoria = "general"
         prioridad = "media"
-
+        
         if any(palabra in desc_lower for palabra in palabras_hardware):
             categoria = "hardware"
             prioridad = "alta"
@@ -104,8 +71,7 @@ class HerramientaSoporte:
         elif any(palabra in desc_lower for palabra in palabras_seguridad):
             categoria = "seguridad"
             prioridad = "crítica"
-
-        logger.info(f"Análisis de problema: '{descripcion}' -> categoria={categoria}, prioridad={prioridad}")
+        
         return {
             "categoria": categoria,
             "prioridad": prioridad,
@@ -342,28 +308,15 @@ class AgenteEspecializado:
         return ""
     
     def procesar_consulta(self, consulta: str, contexto: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Procesa una consulta y devuelve respuesta, con logs, validación y mitigación de sesgos."""
+        """Procesa una consulta y devuelve respuesta"""
         inicio = time.time()
-
-        # Validación de entrada para seguridad y ética
-        if not validar_entrada_usuario(consulta):
-            logger.warning(f"Entrada rechazada por seguridad/ética: {consulta}")
-            return {
-                "agente": self.nombre,
-                "respuesta": "La consulta contiene información sensible o lenguaje no permitido. Por favor, reformule su pregunta.",
-                "tiempo_respuesta": 0,
-                "categoria": self.especialidad,
-                "faiss_usado": False,
-                "contexto_faiss": "",
-                "memoria_usada": {},
-            }
-
+        
         # Obtener contexto de memoria avanzada
         contexto_memoria = self.memoria.obtener_contexto_completo()
-
+        
         # Obtener contexto FAISS para RAG
         contexto_faiss = self.buscar_contexto_faiss(consulta)
-
+        
         # Construir prompt especializado con contexto de memoria y FAISS
         system_prompt = f"""
 Eres {self.nombre}, un agente especializado en {self.especialidad}.
@@ -384,41 +337,37 @@ Directrices:
 4. Mantén un tono profesional y útil
 5. Usa el contexto de memoria y FAISS para respuestas más personalizadas
 6. Si no tienes información específica, indícalo claramente
-7. No entregues información sensible ni discriminatoria. Si la consulta es poco ética, recházala.
 """
-
+        
         # Preparar mensajes
         messages = [SystemMessage(content=system_prompt)]
-
+        
         # Agregar historial reciente (mantener compatibilidad)
         for msg in self.historial[-3:]:
             messages.append(msg)
-
+        
         # Mensaje del usuario con contexto si existe
         consulta_completa = consulta
         if contexto:
             consulta_completa += f"\n\nContexto colaborativo: {contexto.get('info', '')}"
-
+        
         messages.append(HumanMessage(content=consulta_completa))
-
+        
         # Generar respuesta
         respuesta = ""
         for chunk in self.llm.stream(messages):
             respuesta += chunk.content
-
-        # Mitigación de sesgos en la respuesta
-        respuesta = mitigar_sesgos(respuesta)
-
+        
         # Guardar en memoria avanzada
         self.memoria.agregar_interaccion(consulta, respuesta)
-
+        
         # Guardar en historial simple (compatibilidad)
         self.historial.append(HumanMessage(content=consulta))
         self.historial.append(AIMessage(content=respuesta))
-
+        
         if len(self.historial) > 10:
             self.historial = self.historial[-10:]
-
+        
         # Actualizar métricas
         tiempo_respuesta = time.time() - inicio
         self.metricas["consultas_atendidas"] += 1
@@ -427,11 +376,7 @@ Directrices:
             / self.metricas["consultas_atendidas"]
         )
         self.metricas["problemas_resueltos"] += 1
-
-        # Log de consulta y respuesta para trazabilidad
-        logger.info(f"Agente: {self.nombre}, Consulta: {consulta}, Tiempo: {tiempo_respuesta:.2f}s, Categoria: {self.especialidad}")
-        logger.info(f"Respuesta: {respuesta[:200]}")
-
+        
         return {
             "agente": self.nombre,
             "respuesta": respuesta,
@@ -578,24 +523,24 @@ def main():
         page_icon="⚙️",
         layout="wide"
     )
-
+    
     st.title("⚙️ Sistema Multi-Agente de Soporte Informático")
     st.markdown("Sistema con orquestación, agentes especializados y colaboración entre agentes")
-
+    
     # Inicializar orquestador
     if "orquestador" not in st.session_state:
         st.session_state.orquestador = OrquestadorMultiagente()
-
+        
         # Cargar material de soporte desde archivo
         try:
             with open("soporte_informatica.txt", "r", encoding="utf-8") as f:
                 material_soporte = f.read()
-
+            
             # Cargar material específico por agente
             materiales_especificos = {
                 "hardware": f"""
                 {material_soporte}
-
+                
                 ESPECIALIDAD HARDWARE:
                 - Componentes físicos del computador (CPU, RAM, discos, tarjetas gráficas)
                 - Problemas de rendimiento y capacidad
@@ -604,7 +549,7 @@ def main():
                 """,
                 "software": f"""
                 {material_soporte}
-
+                
                 ESPECIALIDAD SOFTWARE:
                 - Programas y aplicaciones (Windows, Office, navegadores)
                 - Instalación y desinstalación de software
@@ -613,7 +558,7 @@ def main():
                 """,
                 "redes": f"""
                 {material_soporte}
-
+                
                 ESPECIALIDAD REDES:
                 - Conectividad (WiFi, Ethernet, routers, switches)
                 - Configuración de red
@@ -622,7 +567,7 @@ def main():
                 """,
                 "seguridad": f"""
                 {material_soporte}
-
+                
                 ESPECIALIDAD SEGURIDAD:
                 - Protección contra amenazas (antivirus, firewall, malware)
                 - Configuración de seguridad
@@ -631,7 +576,7 @@ def main():
                 """,
                 "general": f"""
                 {material_soporte}
-
+                
                 ESPECIALIDAD GENERAL:
                 - Soporte técnico general
                 - Consultas diversas
@@ -639,19 +584,19 @@ def main():
                 - Información general de TI
                 """
             }
-
+            
             for agente_nombre, agente in st.session_state.orquestador.agentes.items():
                 material = materiales_especificos.get(agente_nombre, material_soporte)
                 agente.cargar_material(material)
-
+                
             st.success("✅ Material de soporte cargado con FAISS para todos los agentes")
-
+            
         except FileNotFoundError:
             st.error("❌ Archivo soporte_informatica.txt no encontrado. Por favor, crea este archivo con el material de soporte técnico.")
             st.stop()
-
+        
         st.session_state.historial_consultas = []
-
+    
     # Sidebar
     with st.sidebar:
         st.header("📋 Panel de Control")
@@ -659,7 +604,7 @@ def main():
         for nombre, agente in st.session_state.orquestador.agentes.items():
             metricas = agente.metricas
             st.write(f"**{nombre.upper()}**: {metricas['consultas_atendidas']} consultas")
-
+        
         st.markdown("---")
         if st.button("🔄 Limpiar Memoria"):
             for agente in st.session_state.orquestador.agentes.values():
@@ -668,41 +613,41 @@ def main():
                 # Limpiar historial simple (compatibilidad)
                 agente.historial = []
             st.success("✅ Memoria avanzada limpiada")
-
+    
     # Área principal
     col1, col2 = st.columns([2, 1])
-
+    
     with col1:
         st.header("💬 Consulta Multi-Agente")
-
+        
         # Input
         consulta = st.text_area(
             "Describe tu problema técnico:",
             placeholder="Describe tu problema técnico aquí...",
             height=100
         )
-
+        
         enviar = st.button("▶️ Enviar", type="primary")
-
+        
         # Procesar consulta
         if enviar and consulta.strip():
             with st.spinner("⚙️ Procesando con múltiples agentes especializados..."):
                 # Usar orquestador para procesar consulta
                 resultado = st.session_state.orquestador.procesar_consulta_compleja(consulta)
-
+                
                 # Mostrar resultado
                 st.markdown("### 🔧 Respuesta del Sistema")
                 st.info(f"🎯 **Agente Principal**: {resultado['agente_principal']}")
                 st.info(f"👥 **Agentes Involucrados**: {', '.join(resultado['agentes_involucrados'])}")
                 st.info(f"⏱️ **Tiempo**: {resultado['tiempo_respuesta']:.2f}s")
-
+                
                 if "colaboracion" in resultado:
                     with st.expander("🔗 Colaboración Multi-Agente"):
                         st.markdown(resultado["colaboracion"])
-
+                
                 st.markdown("#### 📋 Respuesta:")
                 st.markdown(resultado["respuesta"])
-
+                
                 # Mostrar información de FAISS
                 if "faiss_usado" in resultado and resultado["faiss_usado"]:
                     with st.expander("🔍 FAISS RAG Utilizado"):
@@ -712,13 +657,13 @@ def main():
                             st.text(resultado["contexto_faiss"])
                         else:
                             st.info("Contexto FAISS disponible pero no mostrado")
-
+                
                 # Mostrar información de memoria utilizada
                 if "memoria_usada" in resultado:
                     with st.expander("🧠 Memoria Utilizada"):
                         memoria_info = resultado["memoria_usada"]
                         col_mem1, col_mem2, col_mem3 = st.columns(3)
-
+                        
                         with col_mem1:
                             st.metric("Buffer", memoria_info.get("buffer", 0))
                             st.caption("Historial completo")
@@ -728,7 +673,7 @@ def main():
                         with col_mem3:
                             st.metric("Window", memoria_info.get("window", 0))
                             st.caption("Últimas interacciones")
-
+                        
                         col_mem4, col_mem5 = st.columns(2)
                         with col_mem4:
                             st.metric("Entities", memoria_info.get("entities", 0))
@@ -736,73 +681,38 @@ def main():
                         with col_mem5:
                             st.metric("Vector", memoria_info.get("vector", 0))
                             st.caption("Memoria a largo plazo")
-
+                
                 # Guardar
                 st.session_state.historial_consultas.append({
                     "consulta": consulta,
                     "resultado": resultado,
                     "timestamp": datetime.now()
                 })
-
-                # Dashboard de observabilidad y logs
-                with st.expander("📊 Observabilidad y Logs (Avanzado)"):
-                    st.markdown("#### Últimos logs de ejecución (trazabilidad)")
-                    try:
-                        with open('agentes_observabilidad.log', 'r', encoding='utf-8') as flog:
-                            logs = flog.readlines()[-20:]
-                        st.text(''.join(logs))
-                    except Exception as e:
-                        st.warning(f"No se pudo leer el log: {e}")
-
+    
     with col2:
         st.header("📈 Métricas Globales")
-
+        
         metricas = st.session_state.orquestador.metricas_globales
         st.metric("Total Consultas", metricas["total_consultas"])
         st.metric("Colaboraciones", metricas["colaboraciones"])
-
+        
         st.markdown("### 📊 Uso de Agentes")
         for agente, count in metricas["agentes_involucrados"].items():
             st.write(f"**{agente}**: {count}")
-
+        
         # Historial de comunicación
         if st.session_state.orquestador.comunicacion_agentes:
             st.markdown("### 🔄 Última Comunicación")
             ultima = st.session_state.orquestador.comunicacion_agentes[-1]
             st.write(f"Agentes: {', '.join(ultima['agentes'])}")
             st.caption(f"{ultima['consulta']}")
-
-        # Panel de recomendaciones de escalabilidad y ética
-        st.markdown("---")
-        st.markdown("### 🛡️ Seguridad, Ética y Escalabilidad")
-        st.info("""
-**Seguridad:**
-- El sistema valida entradas para evitar datos sensibles y lenguaje ofensivo.
-- Se recomienda revisar y actualizar la lista de palabras prohibidas y políticas de privacidad periódicamente.
-
-**Ética:**
-- Se mitigan sesgos en las respuestas y se advierte al usuario si se detecta lenguaje potencialmente discriminatorio.
-- Se recomienda implementar revisiones humanas para casos críticos (human-in-the-loop).
-
-**Escalabilidad:**
-- Para producción, se recomienda desplegar el sistema en infraestructura cloud con balanceo de carga y almacenamiento distribuido de logs.
-- Monitorear cuellos de botella y optimizar el uso de memoria y procesamiento.
-        """)
-
+    
     # Footer
     st.markdown("---")
-    st.markdown("*Sistema Multi-Agente con Orquestación Inteligente, Observabilidad, Seguridad, Ética y Escalabilidad*")
+    st.markdown("*Sistema Multi-Agente con Orquestación Inteligente y Colaboración Inter-Agente*")
 
 if __name__ == "__main__":
     if not os.getenv("GITHUB_TOKEN"):
         st.error("🔧 Configura la variable de entorno GITHUB_TOKEN")
     else:
         main()
-
-# --------------------
-# DOCUMENTACIÓN DE CAMBIOS
-# --------------------
-# - Se agregó instrumentación avanzada de observabilidad (logs, trazabilidad, métricas, dashboard de logs en Streamlit).
-# - Se implementaron validaciones de seguridad y ética (guardrails, mitigación de sesgos, advertencias, control de datos sensibles).
-# - Se añadieron recomendaciones de escalabilidad y ética en el panel lateral.
-# - Se documentaron todos los cambios para cumplir con los requisitos de la materia de Ingeniería de Soluciones con IA.
