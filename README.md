@@ -1,5 +1,68 @@
 # Sistema Multi-Agente con Orquestación Inteligente
 
+## 🆕 Cambios 2025: Observabilidad, Seguridad, Ética y Escalabilidad
+
+Se han añadido flujos y componentes para:
+- Observabilidad (dashboards, logs, métricas, alertas)
+- Trazabilidad (logs de ejecución, rutas, análisis de fallas)
+- Seguridad (validación de entradas, guardrails, protección de datos)
+- Ética (mitigación de sesgos, advertencias, transparencia)
+- Escalabilidad (recomendaciones de despliegue y monitoreo)
+
+Consulta `DOCUMENTACION_CAMBIOS.md` para detalles técnicos.
+
+```mermaid
+graph TB
+	subgraph "Interfaz de Usuario"
+		U[Usuario]
+		SI[Streamlit Interface]
+		DASH[Dashboard Observabilidad]
+		LOGS[Panel de Logs]
+	end
+	subgraph "Sistema de Orquestación"
+		OM[OrquestadorMultiagente]
+		HS[HerramientaSoporte]
+		AH[Agente Hardware]
+		AS[Agente Software]
+		AR[Agente Redes]
+		ASE[Agente Seguridad]
+		AG[Agente General]
+		AP[analizar_problema]
+	end
+	subgraph "Seguridad y Ética"
+		GUARD[Guardrails/Validación]
+		SESGOS[Mitigación de Sesgos]
+		PRIV[Protección de Datos]
+	end
+	subgraph "Escalabilidad"
+		CLOUD[Infraestructura Cloud]
+		BALANCEO[Balanceo de Carga]
+	end
+	U --> SI
+	SI --> OM
+	SI --> DASH
+	SI --> LOGS
+	OM --> HS
+	OM --> AH
+	OM --> AS
+	OM --> AR
+	OM --> ASE
+	OM --> AG
+	OM --> AP
+	OM --> GUARD
+	OM --> SESGOS
+	OM --> PRIV
+	OM --> CLOUD
+	OM --> BALANCEO
+	DASH --> LOGS
+	LOGS --> OM
+	LOGS --> AH
+	LOGS --> AS
+	LOGS --> AR
+	LOGS --> ASE
+	LOGS --> AG
+```
+
 ## 🎯 Descripción del Proyecto
 
 Este proyecto implementa un sistema avanzado de soporte informático utilizando múltiples agentes especializados con orquestación inteligente. El sistema integra conceptos de RA1 (Recuperación y Memoria) y RA2 (Agentes y Orquestación) para crear una solución completa de asistencia técnica.
@@ -12,6 +75,19 @@ Este proyecto implementa un sistema avanzado de soporte informático utilizando 
 - **Colaboración Multi-Agente**: Agentes trabajan juntos cuando es necesario
 - **Interfaz Web**: Dashboard interactivo con Streamlit
 - **Métricas en Tiempo Real**: Monitoreo de rendimiento por agente
+
+
+## 🧩 Justificación de la Elección de Componentes
+
+Este sistema multi-agente fue diseñado seleccionando cuidadosamente cada componente para asegurar alineación con los requerimientos del flujo de trabajo y maximizar la eficiencia, escalabilidad y mantenibilidad:
+
+- **LangChain y sus módulos (Classic, Community, Text Splitters, OpenAI):** Permiten la integración modular de agentes, memorias y herramientas de procesamiento de lenguaje natural. Se eligieron por su flexibilidad y soporte para arquitecturas multi-agente, facilitando la orquestación y la gestión avanzada de memoria conversacional.
+- **FAISS (Facebook AI Similarity Search):** Seleccionado como vectorstore por su alta eficiencia en búsquedas semánticas sobre grandes volúmenes de datos, requisito clave para respuestas rápidas y relevantes en soporte técnico.
+- **Streamlit:** Elegido para la interfaz web por su rapidez de desarrollo y capacidad de crear dashboards interactivos, permitiendo a los usuarios finales interactuar con los agentes de manera intuitiva.
+- **Memorias avanzadas (ConversationBufferMemory, ConversationSummaryMemory, etc.):** Implementadas para mantener el contexto conversacional, resumir interacciones y gestionar información relevante a lo largo de sesiones, alineándose con la necesidad de soporte técnico personalizado y contextual.
+- **Orquestación Multi-Agente:** La coordinación entre agentes especializados permite abordar consultas complejas de manera colaborativa, mejorando la cobertura y precisión de las respuestas.
+
+Cada componente fue seleccionado tras comparar alternativas y validar su aporte directo a los objetivos del sistema, como se detalla en el notebook de comparación y el informe técnico. Esta alineación asegura que la arquitectura no solo es robusta, sino también justificadamente óptima para el flujo de trabajo propuesto.
 
 ## 🚀 Instalación Rápida
 
@@ -33,6 +109,8 @@ venv\Scripts\activate  # Windows
 
 # Instalar dependencias
 pip install -r requirement.txt
+
+> **Nota:** Este sistema utiliza la versión moderna de LangChain (`langchain-core >=1.1.0`, `langchain-openai >=1.0.3`, `langchain-community >=0.0.30`, `langchain-text-splitters >=0.0.1`). Los imports y la inicialización de modelos siguen la nueva API oficial. Consulta el código fuente para ejemplos de uso actualizados.
 
 # Configurar variables de entorno
 export GITHUB_TOKEN="tu_token_aqui"

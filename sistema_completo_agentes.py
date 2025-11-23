@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
+load_dotenv()
 """
 Sistema Completo de Agentes Múltiples con Orquestación y Multi-Agente
 =====================================================================
 
 """
+
 
 import os
 import time
@@ -16,6 +19,22 @@ from langchain_core.documents import Document
 from langchain_classic.memory import ConversationBufferMemory, ConversationSummaryMemory, ConversationBufferWindowMemory, ConversationEntityMemory, VectorStoreRetrieverMemory
 from langchain_community.vectorstores import FAISS
 from langsmith import Client
+import logging
+
+# -------------------- Logging persistente y función de evento --------------------
+logging.basicConfig(
+    filename="logs_agentes.log",
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    encoding="utf-8"
+)
+def log_event(msg, level="info"):
+    if level == "error":
+        logging.error(msg)
+    elif level == "warning":
+        logging.warning(msg)
+    else:
+        logging.info(msg)
 
 # -------------------- Configuración --------------------
 client = Client()
@@ -526,6 +545,7 @@ def main():
     
     st.title("⚙️ Sistema Multi-Agente de Soporte Informático")
     st.markdown("Sistema con orquestación, agentes especializados y colaboración entre agentes")
+    st.warning("⚠️ Este sistema utiliza IA generativa. Las respuestas pueden contener sesgos o errores. Por favor, valida la información crítica y revisa las advertencias éticas en la documentación.")
     
     # Inicializar orquestador
     if "orquestador" not in st.session_state:
@@ -682,22 +702,31 @@ def main():
                             st.metric("Vector", memoria_info.get("vector", 0))
                             st.caption("Memoria a largo plazo")
                 
-                # Guardar
-                st.session_state.historial_consultas.append({
-                    "consulta": consulta,
-                    "resultado": resultado,
-                    "timestamp": datetime.now()
-                })
-    
-    with col2:
-        st.header("📈 Métricas Globales")
-        
-        metricas = st.session_state.orquestador.metricas_globales
-        st.metric("Total Consultas", metricas["total_consultas"])
-        st.metric("Colaboraciones", metricas["colaboraciones"])
-        
-        st.markdown("### 📊 Uso de Agentes")
-        for agente, count in metricas["agentes_involucrados"].items():
+                # Sidebar
+                with st.sidebar:
+                    st.header("📋 Panel de Control")
+                    st.markdown("### Agentes Disponibles:")
+                    for nombre, agente in st.session_state.orquestador.agentes.items():
+                        metricas = agente.metricas
+                        st.write(f"**{nombre.upper()}**: {metricas['consultas_atendidas']} consultas")
+                    st.markdown("---")
+                    if st.button("🔄 Limpiar Memoria"):
+                        for agente in st.session_state.orquestador.agentes.values():
+                            # Limpiar memoria avanzada
+                            agente.memoria.limpiar_memoria()
+                            # Limpiar historial simple (compatibilidad)
+                            agente.historial = []
+                        st.success("✅ Memoria avanzada limpiada")
+                    st.markdown("---")
+                    st.subheader("🛡️ Observabilidad y Logs")
+                    try:
+                        with open("logs_agentes.log", "r", encoding="utf-8") as flog:
+                            logs = flog.readlines()[-15:]
+                        for logline in logs:
+                            st.code(logline.strip(), language="text")
+                    except Exception as e:
+                        st.info("No hay logs disponibles aún.")
+        for agente, count in metricas.get("agentes_involucrados", {}).items():
             st.write(f"**{agente}**: {count}")
         
         # Historial de comunicación
