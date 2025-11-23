@@ -1,10 +1,23 @@
 # Diagramas de Arquitectura - Sistema Multi-Agente
 
+## 🆕 Cambios 2025: Observabilidad, Seguridad, Ética y Escalabilidad
+
+Se han añadido flujos y componentes para:
+- Observabilidad (dashboards, logs, métricas, alertas)
+- Trazabilidad (logs de ejecución, rutas, análisis de fallas)
+- Seguridad (validación de entradas, guardrails, protección de datos)
+- Ética (mitigación de sesgos, advertencias, transparencia)
+- Escalabilidad (recomendaciones de despliegue y monitoreo)
+
+Consulta `DOCUMENTACION_CAMBIOS.md` para detalles técnicos.
+
 ```mermaid
 graph TB
     subgraph "Interfaz de Usuario"
         U[Usuario]
         SI[Streamlit Interface]
+        DASH[Dashboard Observabilidad]
+        LOGS[Panel de Logs]
     end
     
     subgraph "Sistema de Orquestación"
@@ -40,8 +53,21 @@ graph TB
         AP[analizar_problema]
     end
     
+    subgraph "Seguridad y Ética"
+        GUARD[Guardrails/Validación]
+        SESGOS[Mitigación de Sesgos]
+        PRIV[Protección de Datos]
+    end
+    
+    subgraph "Escalabilidad"
+        CLOUD[Infraestructura Cloud]
+        BALANCEO[Balanceo de Carga]
+    end
+    
     U --> SI
     SI --> OM
+    SI --> DASH
+    SI --> LOGS
     OM --> HS
     OM --> AH
     OM --> AS
@@ -100,6 +126,20 @@ graph TB
     FAISS3 --> EMB
     FAISS4 --> EMB
     FAISS5 --> EMB
+    
+    OM --> GUARD
+    OM --> SESGOS
+    OM --> PRIV
+    OM --> CLOUD
+    OM --> BALANCEO
+    
+    DASH --> LOGS
+    LOGS --> OM
+    LOGS --> AH
+    LOGS --> AS
+    LOGS --> AR
+    LOGS --> ASE
+    LOGS --> AG
 ```
 
 ```mermaid
