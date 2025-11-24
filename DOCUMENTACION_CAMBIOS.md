@@ -1,3 +1,33 @@
+## Resumen de Arquitectura y Visualización (2025)
+
+El sistema multi-agente implementa:
+- **Agentes especializados** (hardware, software, redes, seguridad, general) coordinados por un orquestador central.
+- **Memoria avanzada** (LangChain, FAISS, buffer, resumen, entidades, vectorial).
+- **Panel visual en Streamlit** con navegación para ver agentes, métricas y logs.
+- **Métricas locales y de LangSmith**: consultas, colaboraciones, duración, estado, evolución de traces.
+- **Visualizaciones**: tarjetas de agentes, tabla coloreada, gráficos interactivos (Plotly).
+- **Seguridad y ética**: bloqueo de preguntas peligrosas (hacking, inyección SQL, etc.).
+- **Logs persistentes** y análisis de eventos.
+
+### Dependencias
+- Python >= 3.8
+- Instalar dependencias con: `pip install -r requirement.txt` (incluye: streamlit, langchain, langsmith, pandas, plotly, etc.)
+
+### Ejecución
+1. Configura el archivo `.env` con tus claves y proyecto LangSmith.
+2. Ejecuta: `streamlit run sistema_completo_agentes.py`
+3. Usa el menú lateral para navegar entre agentes, métricas y logs.
+
+### Visualizaciones
+- **Agentes**: tarjetas coloridas con íconos y métricas clave.
+- **Métricas**: tabla coloreada, gráfico de barras (duración de prompts), gráfico de líneas (evolución de traces).
+- **Logs**: últimos eventos y errores del sistema.
+
+### Seguridad y ética
+- El sistema bloquea consultas peligrosas y muestra advertencias claras al usuario.
+- Cumple con buenas prácticas de privacidad y uso responsable.
+
+---
 # DOCUMENTACION_CAMBIOS.md
 
 ## Cambios 2025: Observabilidad, Seguridad, Ética y Escalabilidad

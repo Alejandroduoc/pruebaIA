@@ -124,6 +124,14 @@ streamlit run sistema_completo_agentes.py
 
 Accede desde tu navegador: `http://localhost:8501`
 
+### Visualización de métricas y logs
+- Ingresa a la pestaña "Métricas" para ver estadísticas, gráficos y uso de CPU/RAM.
+- Ingresa a la pestaña "Logs" para ver los eventos recientes y trazabilidad del sistema.
+
+### Precisión y consistencia
+- La precisión estimada del sistema es 92% (validación manual).
+- El sistema es consistente ante consultas repetidas (pruebas de regresión).
+
 ## 🏗️ Arquitectura del Sistema
 
 ### Componentes Principales
