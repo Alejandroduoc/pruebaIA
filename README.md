@@ -253,6 +253,8 @@ sistema-multi-agente/
 
 ## 🎓 Integración RA1 y RA2
 
+## 🎓 Integración RA1, RA2 y RA3
+
 ### RA1 - Recuperación y Memoria ✅
 - **RAG completo con FAISS**: Búsqueda semántica implementada
 - **Memoria avanzada**: 5 tipos de memoria de LangChain
@@ -267,5 +269,13 @@ sistema-multi-agente/
 - Sistema de orquestación centralizado
 - Colaboración inter-agente
 - Herramientas especializadas
+
+### RA3 - Observabilidad, Métricas y Seguridad ✅
+- **Observabilidad**: Dashboard en Streamlit con métricas, logs y alertas en tiempo real.
+- **Trazabilidad**: Registro completo de eventos, errores y rutas de consulta en logs persistentes.
+- **Métricas**: Precisión, latencia, errores, uso de CPU/RAM, colaboración multi-agente y evolución de traces.
+- **Detección de anomalías**: Alertas automáticas por errores seguidos, consultas repetidas y latencias altas.
+- **Seguridad y ética**: Filtros de consultas peligrosas, advertencias éticas y protección de datos.
+- **Escalabilidad**: Recomendaciones técnicas y monitoreo para despliegue sostenible.
 
 
