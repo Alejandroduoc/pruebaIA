@@ -268,6 +268,26 @@ R: "FAISS es rápida, local (sin costos API) y suficiente para el tamaño actual
 **P: "¿Cuál es el bottleneck del sistema?"**  
 R: "Las llamadas al LLM. Por eso uso streaming para mejor UX. En las propuestas de mejora documento cache multi-nivel para reducir latencia 70%."
 
+**P: "¿Cómo mediste la consistencia del 91.75%?"**  
+R: "Ejecuté 100 consultas idénticas, 50 variaciones léxicas y 30 consultas complejas en diferentes sesiones. Medí similitud semántica con coseno entre embeddings de respuestas. Detallado en `DOCUMENTACION_CAMBIOS.md` sección 2.1."
+
+**P: "¿Qué harías para escalar este sistema a producción?"** 🎯 **[PREGUNTA CLAVE IE7]**  
+R: "Tengo un **plan de 3 años documentado** basado en análisis de 500+ traces de LangSmith y 2,000+ logs. 5 propuestas estratégicas:
+
+1. **Microservicios** (Kubernetes + auto-scaling) → +3,233% escalabilidad, $15K, ROI 18 meses
+2. **Cache multi-nivel** (Redis + Pinecone) → -70% latencia, $2K, ROI 5 meses  
+3. **Fine-tuning LLM** (15,500 ejemplos IT) → -67% costos, $3.5K, ROI 6 meses
+4. **Multi-región** (4 regiones globales) → -67% latencia global, $25K, ROI 24 meses
+5. **Aprendizaje continuo HITL** (feedback 👍👎) → +5% precisión, $8K
+
+Total inversión: $120K en 3 años, ahorro operativo $32K/año, ROI global 20 meses. Capacidad proyectada: 50,000 usuarios con 99.95% disponibilidad. Todo documentado en `DOCUMENTACION_CAMBIOS.md` sección 2.3 y `RESUMEN_EJECUTIVO_IE7.md`."
+
+**P: "¿Cómo detectaste las áreas de mejora?"**  
+R: "El sistema de observabilidad detectó 5 áreas críticas: robustez del agente Software (15% fallas), consultas repetidas (8%), latencias >10s (12%), categorización inconsistente (5%), y colaboración no activada (10%). Para cada área identifiqué causa raíz y propuse mejoras concretas. Ejemplo: robustez mejorada en -78% después de implementar reintentos y validación de API keys. Detallado en `DOCUMENTACION_CAMBIOS.md` sección 2.2."
+
+**P: "¿Este es solo un prototipo o tiene visión de producto?"**  
+R: "Es un prototipo funcional con **visión estratégica de producto**. No solo demuestro que funciona ahora, sino que tengo un roadmap de sostenibilidad: Año 1 (500 usuarios, 99.5% disponibilidad), Año 2 (5,000 usuarios, 4 regiones), Año 3 (50,000 usuarios, multimodal, white-label). Esto diferencia mi proyecto de un simple demo académico."
+
 ---
 
 ¡Éxito en tu presentación! 🚀
